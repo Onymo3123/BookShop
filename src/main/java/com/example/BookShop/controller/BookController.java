@@ -16,7 +16,6 @@ import java.util.List;
 
 @Controller
 public class BookController {
-
     private final BookService bookService;
     private final AuthorService authorService;
     private final GenreService genreService;
@@ -31,17 +30,14 @@ public class BookController {
     @GetMapping("/books")
     public String listBooks(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "id") String sortField, // Принимаем параметр сортировки
+            @RequestParam(defaultValue = "id") String sortField,
             Model model) {
-
-        List<Book> listBooks = bookService.findPaginatedBooks(page, sortField); // Передаем его в сервис
+        List<Book> listBooks = bookService.findPaginatedBooks(page, sortField);
         int totalPages = bookService.getTotalPages();
-
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("sortField", sortField); // Добавляем поле сортировки в модель для использования в HTML
+        model.addAttribute("sortField", sortField);
         model.addAttribute("listBooks", listBooks);
-
         return "book_list";
     }
 
@@ -86,9 +82,8 @@ public class BookController {
     }
     @GetMapping("/genre/edit/{id}")
     public String showEditGenreForm(@PathVariable("id") Long id, Model model) {
-        Genre genre = genreService.findGenreById(id); // Вам нужно реализовать этот метод
+        Genre genre = genreService.findGenreById(id);
         model.addAttribute("genre", genre);
-        // Возвращает тот же шаблон book_form.html
         return "genre_form";
     }
     @PostMapping("/genre/new")

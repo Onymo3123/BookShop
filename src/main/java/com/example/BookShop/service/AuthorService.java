@@ -2,7 +2,6 @@ package com.example.BookShop.service;
 
 
 import com.example.BookShop.entity.Author;
-import com.example.BookShop.entity.Book;
 import com.example.BookShop.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
