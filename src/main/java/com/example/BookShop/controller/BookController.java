@@ -47,8 +47,15 @@ public class BookController {
         return "author_form";
     }
 
-    @PostMapping("/authors/delete/{id}")
-    public String deleteAuthor(@PathVariable("id") Long id) {
+    @GetMapping("/authors/delete")
+    public String showDeleteAuthorForm(Model model) {
+        model.addAttribute("authors", authorService.findAllAuthors());
+        model.addAttribute("author", new Author());
+        return "author_delete";
+    }
+
+    @PostMapping("/authors/delete")
+    public String deleteAuthor(@RequestParam("id") Long id) {
         authorService.deleteAuthorById(id);
         return "redirect:/books";
     }
