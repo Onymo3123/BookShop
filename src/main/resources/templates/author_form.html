@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${author.id == null ? 'Создать автора' : 'Редактировать автора'}"></title>
+    <style>
+        div { margin-bottom: 10px; }
+        label { display: block; font-weight: bold; }
+        input { width: 300px; padding: 5px; }
+    </style>
+</head>
+<body>
+<h1 th:text="${author.id == null ? 'Добавить автора' : 'Редактировать автора'}">Авторы</h1>
+<form th:action="@{/authors/new}" th:object="${author}" method="post">
+    <input type="hidden" th:field="*{id}" />
+
+    <div>
+        <label for="author">Автор:</label>
+        <input type="text" id="author" th:field="*{author}" required />
+    </div>
+    <div>
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+<a th:href="@{/books}">Отмена и назад к списку</a>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список книг</title>
+    <style>
+        table { border-collapse: collapse; width: 60%; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .pagination a { margin: 0 5px; text-decoration: none; }
+        .action-btn { margin: 0 2px; }
+    </style>
+</head>
+<body>
+<h1>Список книг</h1>
+
+<!-- 1. Кнопка для перехода на страницу ДОБАВЛЕНИЯ новой книги -->
+<a th:href="@{/books/new}" class="action-btn">
+    <button>Добавить новую книгу</button>
+</a>
+<a th:href="@{/authors/new}" class="action-btn">
+    <button>Добавить автора</button>
+</a>
+<a th:href="@{/genre/new}" class="action-btn">
+    <button>Добавить жанр</button>
+</a>
+
+<table>
+    <thead>
+    <tr>
+        <!-- Ссылка для сортировки по ID -->
+        <th><a th:href="@{/books(page=${currentPage}, sortField='id')}"
+               th:classappend="${sortField == 'id' ? 'active-sort' : ''}">ID</a></th>
+        <th><a th:href="@{/books(page=${currentPage}, sortField='author')}"
+               th:classappend="${sortField == 'authorName' ? 'active-sort' : ''}">Автор</a></th>
+        <th><a th:href="@{/books(page=${currentPage}, sortField='genre')}"
+               th:classappend="${sortField == 'genreName' ? 'active-sort' : ''}">Жанр</a></th>
+        <th><a th:href="@{/books(page=${currentPage}, sortField='title')}"
+               th:classappend="${sortField == 'title' ? 'active-sort' : ''}">Название</a></th>
+        <th><a th:href="@{/books(page=${currentPage}, sortField='count')}"
+               th:classappend="${sortField == 'count' ? 'active-sort' : ''}">Количество</a></th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="book : ${listBooks}">
+        <td th:text="${book.id}">1</td>
+        <td th:text="${book.authorName}">Автор</td>
+        <td th:text="${book.genreName}">Жанр</td>
+        <td th:text="${book.title}">Название книги</td>
+        <td th:text="${book.count}">Количество</td>
+        <td>
+            <a th:href="@{/books/edit/{id}(id=${book.id})}" class="action-btn">
+                <button>Редактировать</button>
+            </a>
+        </td>
+        <td>
+            <form th:action="@{/books/delete/{id}(id=${book.id})}" method="post" style="display:inline;">
+                <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить эту книгу?');">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="pagination">
+    <a th:if="${currentPage > 1}" th:href="@{/books(page=${currentPage - 1})}">Предыдущая</a>
+    <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+            <a th:if="${currentPage != i}" th:href="@{/books(page=${i})}" th:text="${i}">1</a>
+            <span th:if="${currentPage == i}" th:text="${i}" style="font-weight: bold;">1</span>
+        </span>
+    <a th:if="${currentPage < totalPages}" th:href="@{/books(page=${currentPage + 1})}">Следующая</a>
+</div>
+
+</body>
+</html>

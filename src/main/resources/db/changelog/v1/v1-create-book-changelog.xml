@@ -1,0 +1,41 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+<changeSet id="v1-3" author="Laptev Alexandr">
+    <createTable tableName="book">
+        <column name="id" type="bigint" autoIncrement="true">
+            <constraints primaryKey="true"/>
+        </column>
+        <column name="title" type="varchar(50)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="author_id" type="bigint">
+            <constraints nullable="false"/>
+        </column>
+        <column name="genre_id" type="bigint">
+            <constraints nullable="false"/>
+        </column>
+        <column name="count" type="int">
+            <constraints nullable="false"/>
+        </column>
+
+    </createTable>
+
+    <addForeignKeyConstraint
+            constraintName="authors_book"
+            baseTableName="book"
+            referencedTableName="author"
+            referencedColumnNames="id"
+     baseColumnNames="author_id"/>
+    <addForeignKeyConstraint
+            constraintName="genre_book"
+            baseTableName="book"
+            referencedTableName="genre"
+            referencedColumnNames="id"
+     baseColumnNames="genre_id"/>
+
+</changeSet>
+
+
+</databaseChangeLog>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${genre.id == null ? 'Создать жанр' : 'Редактировать жанр'}"></title>
+    <style>
+        div { margin-bottom: 10px; }
+        label { display: block; font-weight: bold; }
+        input { width: 300px; padding: 5px; }
+    </style>
+</head>
+<body>
+<h1 th:text="${genre.id == null ? 'Добавить жанр' : 'Редактировать жанр'}">Жанр</h1>
+<form th:action="@{/genre/new}" th:object="${genre}" method="post">
+    <input type="hidden" th:field="*{id}" />
+
+    <div>
+        <label for="genre">Жанр :</label>
+        <input type="text" id="genre" th:field="*{genre}" required />
+    </div>
+    <div>
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+<a th:href="@{/books}">Отмена и назад к списку</a>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${book.id == null ? 'Создать книгу' : 'Редактировать книгу'}"></title>
+  <style>
+    div { margin-bottom: 10px; }
+    label { display: block; font-weight: bold; }
+    input { width: 300px; padding: 5px; }
+  </style>
+</head>
+<body>
+<h1 th:text="${book.id == null ? 'Создать новую книгу' : 'Редактировать книгу'}">Форма книги</h1>
+<form th:action="@{/books}" th:object="${book}" method="post">
+  <input type="hidden" th:field="*{id}" />
+
+  <div>
+    <label for="title">Название:</label>
+    <input type="text" id="title" th:field="*{title}" required />
+  </div>
+  <div>
+    <label for="author"></label><select th:field="*{authorId}" id="author" required>
+    <option value="">-- Выберите автора --</option>
+    <option th:each="a : ${authors}"
+            th:value="${a.id}"
+            th:text="${a.author}">Имя Автора</option>
+  </select>
+  </div>
+  <div>
+    <label for="genre"></label><select th:field="*{genreId}" id="genre" required>
+    <option value="">-- Выберите жанр --</option>
+    <option th:each="g : ${genres}"
+            th:value="${g.id}"
+            th:text="${g.genre}">Название Жанра</option>
+  </select>
+  </div>
+  <div>
+    <label for="count">Количество:</label>
+    <input type="number" id="count" th:field="*{count}" required />
+  </div>
+  <div>
+    <button type="submit">Сохранить</button>
+  </div>
+</form>
+<a th:href="@{/books}">Отмена и назад к списку</a>
+
+</body>
+</html>
