@@ -3,10 +3,12 @@ import com.example.BookShop.entity.Book;
 import com.example.BookShop.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
 public class BookService {
+
 
     private final BookRepository bookRepository;
     private static final int PAGE_SIZE = 15;
@@ -45,5 +47,11 @@ public class BookService {
 
     public void deleteBookById(Long id) {
         bookRepository.deleteById(id);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<Book> findBooksWithFilters(String title, Long authorId, Long genreId, String author, String genre) {
+        return bookRepository.searchBooksByFilters(title, authorId, genreId, author, genre);
     }
 }

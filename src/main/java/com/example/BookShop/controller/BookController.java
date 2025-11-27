@@ -16,7 +16,6 @@ import java.util.List;
 
 @Controller
 public class BookController {
-
     private final BookService bookService;
     private final AuthorService authorService;
     private final GenreService genreService;
@@ -31,17 +30,14 @@ public class BookController {
     @GetMapping("/books")
     public String listBooks(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "id") String sortField, // Принимаем параметр сортировки
+            @RequestParam(defaultValue = "id") String sortField,
             Model model) {
-
-        List<Book> listBooks = bookService.findPaginatedBooks(page, sortField); // Передаем его в сервис
+        List<Book> listBooks = bookService.findPaginatedBooks(page, sortField);
         int totalPages = bookService.getTotalPages();
-
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("sortField", sortField); // Добавляем поле сортировки в модель для использования в HTML
+        model.addAttribute("sortField", sortField);
         model.addAttribute("listBooks", listBooks);
-
         return "book_list";
     }
 
@@ -51,8 +47,15 @@ public class BookController {
         return "author_form";
     }
 
-    @PostMapping("/authors/delete/{id}")
-    public String deleteAuthor(@PathVariable("id") Long id) {
+    @GetMapping("/authors/delete")
+    public String showDeleteAuthorForm(Model model) {
+        model.addAttribute("authors", authorService.findAllAuthors());
+        model.addAttribute("author", new Author());
+        return "author_delete";
+    }
+
+    @PostMapping("/authors/delete")
+    public String deleteAuthor(@RequestParam("id") Long id) {
         authorService.deleteAuthorById(id);
         return "redirect:/books";
     }
@@ -86,9 +89,8 @@ public class BookController {
     }
     @GetMapping("/genre/edit/{id}")
     public String showEditGenreForm(@PathVariable("id") Long id, Model model) {
-        Genre genre = genreService.findGenreById(id); // Вам нужно реализовать этот метод
+        Genre genre = genreService.findGenreById(id);
         model.addAttribute("genre", genre);
-        // Возвращает тот же шаблон book_form.html
         return "genre_form";
     }
     @PostMapping("/genre/new")
@@ -142,4 +144,34 @@ public class BookController {
         }
         return "redirect:/books";
     }
+
+    @GetMapping("/search/form")
+    public String showSearchForm(Model model) {
+        model.addAttribute("authors", authorService.findAllAuthors());
+        model.addAttribute("genres", genreService.findAllGenre());
+        model.addAttribute("books", List.of());
+        return "book_search_form";
+    }
+
+    @GetMapping("/search/results")
+    public String handleSearch(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "authorId", required = false) Long authorId,
+            @RequestParam(value = "genreId", required = false) Long genreId,
+            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "genre", required = false) String genre,
+            Model model) {
+        List<Book> results = bookService.findBooksWithFilters(title, authorId, genreId, author, genre);
+
+        model.addAttribute("searchTermAuthorId", authorId);
+        model.addAttribute("searchTermGenreId", genreId);
+
+        model.addAttribute("authors", authorService.findAllAuthors());
+        model.addAttribute("genres", genreService.findAllGenre());
+
+        model.addAttribute("books", results);
+        model.addAttribute("searchTermTitle", title);
+        return "book_search_form";
+    }
+
 }

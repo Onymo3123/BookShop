@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${author.id == null ? 'Удалить автора' : 'Редактировать автора'}"></title>
+    <style>
+        div { margin-bottom: 10px; }
+        label { display: block; font-weight: bold; }
+        input { width: 300px; padding: 5px; }
+    </style>
+</head>
+<body>
+<h1 th:text="${author.id == null ? 'Удалить автора' : 'Редактировать автора'}">Авторы</h1>
+<form th:action="@{/authors/delete}" th:object="${author}" method="post">
+    <div>
+        <label for="id">Выберите автора для удаления:</label>
+        <select id="id" name="id" required>
+            <option value="">-- Выберите автора --</option>
+            <option th:each="a : ${authors}"
+                    th:value="${a.id}"
+                    th:text="${a.author}">Имя Автора</option>
+        </select>
+    </div>
+        <button type="submit">Удалить</button>
+    </div>
+
+
+</form>
+
+
+
+<a th:href="@{/books}">Отмена и назад к списку</a>
+</body>
+</html>

@@ -36,6 +36,11 @@ public class AuthorRepository {
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
+    public Optional<Author> findByAuthor(String author){
+        String sql = "SELECT * FROM author WHERE author = ?";
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, author));
+    }
+
     public int save(Author author){
         String sql = "INSERT INTO author (author) VALUES (?)";
         return jdbcTemplate.update(sql, author.getAuthor());
@@ -47,7 +52,10 @@ public class AuthorRepository {
     }
 
     public int deleteById(Long id){
-        String sql = "DELETE FROM author WHERE id = ?";
+
+        String sql = "DELETE FROM book WHERE author_id = ?";//так как в базе нет каскадного удаления, удаляем сначала из таблицы book
+        jdbcTemplate.update(sql, id);
+        sql = "DELETE FROM author WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }
 

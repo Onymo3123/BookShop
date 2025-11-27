@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск книг</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+<h1>Поиск книг по фильтрам</h1>
+
+<!-- Форма отправляет данные на URL /search/results методом GET -->
+<form action="/search/results" method="get">
+    <div>
+        <label for="title">Название (часть):</label>
+        <!-- Значение поля сохраняется после отправки, используя Thymeleaf -->
+        <input type="text" id="title" name="title" th:value="${searchTermTitle}">
+    </div>
+    <br>
+    <div>
+        <label for="author"></label>
+        <select name="authorId" id="author" > <!-- Заменено th:field на name -->
+            <option value="">-- Выберите автора --</option>
+            <option th:each="a : ${authors}"
+                    th:value="${a.id}"
+                    th:text="${a.author}"
+                    th:selected="${a.id == searchTermAuthorId}"> <!-- Добавлена логика selected -->
+            </option>
+        </select>
+    </div>
+    <div>
+        <label for="genre"></label>
+        <select name="genreId" id="genre" > <!-- Заменено th:field на name -->
+            <option value="">-- Выберите жанр --</option>
+            <option th:each="g : ${genres}"
+                    th:value="${g.id}"
+                    th:text="${g.genre}"
+                    th:selected="${g.id == searchTermGenreId}"> <!-- Добавлена логика selected -->
+            </option>
+        </select>
+    </div>
+    <br>
+    <button type="submit">Искать</button>
+</form>
+
+<hr>
+<a th:href="@{/books}">Отмена и назад к списку</a>
+<!-- Блок результатов -->
+<div th:if="${not #lists.isEmpty(books)}">
+    <h2>Результаты поиска (<span th:text="${#lists.size(books)}">0</span> найдено)</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>ID Автора</th>
+            <th>ID Жанра</th>
+            <th>Кол-во</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Перебираем список книг, переданный из контроллера -->
+        <tr th:each="book : ${books}">
+            <td th:text="${book.id}">1</td>
+            <td th:text="${book.title}">Title</td>
+            <td th:text="${book.authorName}">1</td>
+            <td th:text="${book.genreName}">1</td>
+            <td th:text="${book.count}">0</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:if="${#lists.isEmpty(books)} and ${param.title != null or param.authorId != null or param.genreId != null}">
+    <h2>Ничего не найдено по вашему запросу.</h2>
+</div>
+
+</body>
+</html>
