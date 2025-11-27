@@ -144,4 +144,34 @@ public class BookController {
         }
         return "redirect:/books";
     }
+
+    @GetMapping("/search/form")
+    public String showSearchForm(Model model) {
+        model.addAttribute("authors", authorService.findAllAuthors());
+        model.addAttribute("genres", genreService.findAllGenre());
+        model.addAttribute("books", List.of());
+        return "book_search_form";
+    }
+
+    @GetMapping("/search/results")
+    public String handleSearch(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "authorId", required = false) Long authorId,
+            @RequestParam(value = "genreId", required = false) Long genreId,
+            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "genre", required = false) String genre,
+            Model model) {
+        List<Book> results = bookService.findBooksWithFilters(title, authorId, genreId, author, genre);
+
+        model.addAttribute("searchTermAuthorId", authorId);
+        model.addAttribute("searchTermGenreId", genreId);
+
+        model.addAttribute("authors", authorService.findAllAuthors());
+        model.addAttribute("genres", genreService.findAllGenre());
+
+        model.addAttribute("books", results);
+        model.addAttribute("searchTermTitle", title);
+        return "book_search_form";
+    }
+
 }

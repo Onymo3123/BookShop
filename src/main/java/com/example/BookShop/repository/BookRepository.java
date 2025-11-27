@@ -77,4 +77,40 @@ public class BookRepository {
         String sql = "SELECT COUNT(*) FROM book";
         return jdbcTemplate.queryForObject(sql, Integer.class);
     }
+
+    public List<Book> searchBooksByFilters(String titleFilter, Long authorIdFilter, Long genreIdFilter, String author, String genre) {
+
+        StringBuilder sql = new StringBuilder("SELECT book.*, author.author AS author, genre.genre AS genre FROM book "+
+                "JOIN author ON book.author_id = author.id " +
+                "JOIN genre ON book.genre_id = genre.id " +
+                "WHERE 1=1 ");
+
+        List<Object> params = new java.util.ArrayList<>();
+
+        if (titleFilter != null && !titleFilter.isEmpty()) {
+            sql.append(" AND title LIKE ?");
+            params.add("%" + titleFilter + "%");
+        }
+
+        if (authorIdFilter != null) {
+            sql.append(" AND author_id = ?");
+            params.add(authorIdFilter);
+        }
+
+        if (genreIdFilter != null) {
+            sql.append(" AND genre_id = ?");
+            params.add(genreIdFilter);
+        }
+
+        if (author != null) {
+            sql.append(" AND author LIKE ?");
+            params.add(author);
+        }
+
+        if (genre != null) {
+            sql.append(" AND genre LIKE ?");
+            params.add(genre);
+        }
+        return jdbcTemplate.query(sql.toString(), rowMapper, params.toArray());
+    }
 }
